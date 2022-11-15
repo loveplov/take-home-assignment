@@ -4,7 +4,6 @@ import com.example.accounttransfer.domain.Account
 import com.example.accounttransfer.repostitory.AccountsRepository
 import com.example.accounttransfer.utils.DomainFactory.createAccount
 import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.core.test.TestCase
 import io.kotest.matchers.shouldBe
@@ -20,7 +19,7 @@ class AccountsServiceSpec : WordSpec() {
 	private lateinit var subject: AccountsServiceImpl
 	private lateinit var accountsRepository: AccountsRepository
 
-	override fun beforeEach(testCase: TestCase) {
+	override suspend fun beforeEach(testCase: TestCase) {
 		accountsRepository = mockk(relaxed = true)
 		subject = AccountsServiceImpl(accountsRepository)
 	}

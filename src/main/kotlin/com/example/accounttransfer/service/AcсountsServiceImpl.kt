@@ -27,10 +27,19 @@ class AccountsServiceImpl(val repository: AccountsRepository) : AccountsService 
 		if (from == to) {
 			throw IllegalArgumentException("fromAccountId and toAccountId cannot be the same")
 		}
+		val fromAccount: Account
+		val toAccount: Account
+		if(from < to) {
+			fromAccount =
+				findByIdLocked(from) ?: throw EntityNotFoundException("Account $from not found")
+			toAccount = findByIdLocked(to) ?: throw EntityNotFoundException("Account $to not found")
+		} else {
+			toAccount = findByIdLocked(to) ?: throw EntityNotFoundException("Account $to not found")
+			fromAccount =
+				findByIdLocked(from) ?: throw EntityNotFoundException("Account $from not found")
+		}
 
-		val fromAccount =
-			findByIdLocked(from) ?: throw EntityNotFoundException("Account $from not found")
-		val toAccount = findByIdLocked(to) ?: throw EntityNotFoundException("Account $to not found")
+
 
 		if (fromAccount.balance < amount) {
 			throw IllegalArgumentException("Not enough money on account $from")

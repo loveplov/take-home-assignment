@@ -24,7 +24,7 @@ class AccountsControllerSpec : WordSpec() {
 	private lateinit var subject: AccountsController
 	private lateinit var accountsService: AccountsService
 
-	override fun beforeEach(testCase: TestCase) {
+	override suspend fun beforeEach(testCase: TestCase) {
 		accountsService = mockk(relaxed = true)
 		subject = AccountsController(accountsService)
 	}
