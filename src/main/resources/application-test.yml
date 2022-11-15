@@ -1,0 +1,23 @@
+server:
+  port: 8086
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:challenge
+    username: user
+    password: user
+    driver-class-name: org.h2.Driver
+    testOnBorrow: true
+    validationQuery: SELECT 1
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: false
+    open-in-view: true
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+        temp:
+          use_jdbc_metadata_defaults: false
+
