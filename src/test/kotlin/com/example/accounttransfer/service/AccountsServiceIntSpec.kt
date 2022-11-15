@@ -75,25 +75,37 @@ class AccountsServiceIntSpec(
 		val accountFromBalance = 100000L
 		val accountToId = "782c2e72643a11ed81ce0242ac120002"
 		val transferAmount = 100L
+		val thirdAccountToId = "239bdd26d8ed44e58dfe23fe34bb0a8c"
 
 		val threads = 10
 
 		val workerPool: ExecutorService = Executors.newFixedThreadPool(threads)
 		for (i in 0..9) {
-			val worker =
-				Runnable { subject.transfer(accountFromId, accountToId, amount = transferAmount) }
-			workerPool.submit(worker)
+			if(i % 2 == 0) {
+				workerPool.execute {
+					subject.transfer(accountFromId, thirdAccountToId, amount = transferAmount)
+				}
+			} else {
+				workerPool.execute {
+					subject.transfer(accountFromId, accountToId, amount = transferAmount)
+				}
+			}
 		}
 		workerPool.awaitTermination(1000, TimeUnit.MILLISECONDS)
 
 		val accountUpdatedTo = accountsRepository.findById(accountToId).get()
 		with(accountUpdatedTo) {
-			balance shouldBe (transferAmount * threads)
+			balance shouldBe (transferAmount * 5)
 		}
 
 		val accountUpdatedFrom = accountsRepository.findById(accountFromId).get()
 		with(accountUpdatedFrom) {
 			balance shouldBe (accountFromBalance - (transferAmount * threads))
+		}
+
+		val accountUpdatedThird = accountsRepository.findById(thirdAccountToId).get()
+		with(accountUpdatedThird) {
+			balance shouldBe (transferAmount * 5)
 		}
 
 	}
